@@ -10,6 +10,9 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 import os
+from PIL import Image , ImageFilter
+
+workdir = None
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -48,6 +51,7 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         self.pushButton.clicked.connect(self.open_folder)
+        self.listWidget.clicked.connect(self.choose_image)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -61,6 +65,7 @@ class Ui_MainWindow(object):
         self.pushButton_6.setText(_translate("MainWindow", "Ч/Б"))
     
     def open_folder(self):
+        global workdir
         self.listWidget.clear()
         workdir = QtWidgets.QFileDialog.getExistingDirectory()
         print(workdir)
@@ -68,7 +73,31 @@ class Ui_MainWindow(object):
         for file in filenames:
             if file.endswith('.png') or file.endswith('.jpg') or file.endswith('.jpeg') or file.endswith('.jfif'):
                 self.listWidget.addItem(file)
+    
+    def choose_image(self):
+        filename = self.listWidget.currentItem().text()
+        imageeditor = ImageEditor(filename)
+        imageeditor.load_image()
+        imageeditor.showImage()
 
+class ImageEditor:
+    def __init__(self, filename):
+        self.image = None
+        self.filename = filename
+        self.modified = "modified"
+
+    def load_image(self):
+        path = os.path.join(workdir , self.filename)
+        image = Image.open(path)
+    
+    def showImage(self):
+        ui.label.hide()
+        path = os.path.join(workdir , self.filename)
+        pixmap = QtGui.QPixmap(path)
+        w, h = ui.label.width, ui.label.height
+        #pixmap = pixmap.scaled(w, h, QtCore.Qt.KeepAspectRatio)
+        ui.label.setPixmap(pixmap)
+        ui.label.show()
 
 if __name__ == "__main__":
     import sys
