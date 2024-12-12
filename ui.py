@@ -94,8 +94,8 @@ class ImageEditor:
         ui.label.hide()
         path = os.path.join(workdir , self.filename)
         pixmap = QtGui.QPixmap(path)
-        w, h = ui.label.width, ui.label.height
-        #pixmap = pixmap.scaled(w, h, QtCore.Qt.KeepAspectRatio)
+        w, h = ui.label.width(), ui.label.height()
+        pixmap = pixmap.scaled(w, h, QtCore.Qt.KeepAspectRatio)
         ui.label.setPixmap(pixmap)
         ui.label.show()
 
