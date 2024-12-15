@@ -43,6 +43,36 @@ class ImageEditor:
         self.save_image(mirror , path)
         self.showImage(path)
     
+    def leftImage(self):
+        global workdir
+        if not os.path.isdir(os.path.join(workdir , self.modified)):
+            os.makedirs(os.path.join(workdir , self.modified))
+        path = os.path.join(os.path.join(workdir , self.modified , "left.jpg"))
+        print(path)
+        left = self.image.transpose(Image.ROTATE_90)
+        self.save_image(left , path)
+        self.showImage(path)
+    
+    def rightImage(self):
+        global workdir
+        if not os.path.isdir(os.path.join(workdir , self.modified)):
+            os.makedirs(os.path.join(workdir , self.modified))
+        path = os.path.join(os.path.join(workdir , self.modified , "right.jpg"))
+        print(path)
+        right = self.image.transpose(Image.ROTATE_270)
+        self.save_image(right , path)
+        self.showImage(path)
+    
+    def sharpenImage(self):
+        global workdir
+        if not os.path.isdir(os.path.join(workdir , self.modified)):
+            os.makedirs(os.path.join(workdir , self.modified))
+        path = os.path.join(os.path.join(workdir , self.modified , "sharpen.jpg"))
+        print(path)
+        sharpen = self.image.filter(ImageFilter.SHARPEN)
+        self.save_image(sharpen , path)
+        self.showImage(path)
+    
     def save_image(self , image , path):
         image.save(path)
 
@@ -117,6 +147,9 @@ class Ui_MainWindow(object):
         imageeditor.showImage(path)
         self.pushButton_6.clicked.connect(imageeditor.bwImage)
         self.pushButton_4.clicked.connect(imageeditor.mirrorImage)
+        self.pushButton_2.clicked.connect(imageeditor.leftImage)
+        self.pushButton_3.clicked.connect(imageeditor.rightImage)
+        self.pushButton_5.clicked.connect(imageeditor.sharpenImage)
 
 if __name__ == "__main__":
     import sys
