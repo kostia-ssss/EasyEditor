@@ -1,6 +1,6 @@
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt6 import QtCore, QtGui, QtWidgets
 import os
-from PIL import Image , ImageFilter
+from PIL import Image , ImageFilter , ImageQt
 
 workdir = None
 
@@ -9,72 +9,56 @@ class ImageEditor:
         self.image = None
         self.filename = filename
         self.modified = "modified"
+        self.original = None
+        self.number = 1
 
     def load_image(self):
         path = os.path.join(workdir , self.filename)
-        self.image = Image.open(path)
+        print(path)
+        self.original = Image.open(path)
+        self.image = self.original
     
-    def showImage(self , path):
+    def showImage(self):
         ui.label.hide()
         #path = os.path.join(workdir , path)
-        pixmap = QtGui.QPixmap(path)
+        imageqt = ImageQt.ImageQt(self.image)
+        pixmap = QtGui.QPixmap.fromImage(imageqt)
         w, h = ui.label.width(), ui.label.height()
-        pixmap = pixmap.scaled(w, h, QtCore.Qt.KeepAspectRatio)
+        pixmap = pixmap.scaled(w, h, QtCore.Qt.AspectRatioMode.KeepAspectRatio)
         ui.label.setPixmap(pixmap)
         ui.label.show()
     
     def bwImage(self):
-        global workdir
-        if not os.path.isdir(os.path.join(workdir , self.modified)):
-            os.makedirs(os.path.join(workdir , self.modified))
-        path = os.path.join(os.path.join(workdir , self.modified , "bw.jpg"))
-        print(path)
-        bw = self.image.convert("L")
-        self.save_image(bw , path)
-        self.showImage(path)
+        self.image = self.image.convert("L")
+        self.showImage()
     
     def mirrorImage(self):
-        global workdir
-        if not os.path.isdir(os.path.join(workdir , self.modified)):
-            os.makedirs(os.path.join(workdir , self.modified))
-        path = os.path.join(os.path.join(workdir , self.modified , "mirror.jpg"))
-        print(path)
-        mirror = self.image.transpose(Image.FLIP_TOP_BOTTOM)
-        self.save_image(mirror , path)
-        self.showImage(path)
+        self.image = self.image.transpose(Image.FLIP_TOP_BOTTOM)
+        self.showImage()
     
     def leftImage(self):
-        global workdir
-        if not os.path.isdir(os.path.join(workdir , self.modified)):
-            os.makedirs(os.path.join(workdir , self.modified))
-        path = os.path.join(os.path.join(workdir , self.modified , "left.jpg"))
-        print(path)
-        left = self.image.transpose(Image.ROTATE_90)
-        self.save_image(left , path)
-        self.showImage(path)
+        self.image = self.image.transpose(Image.ROTATE_90)
+        self.showImage()
     
     def rightImage(self):
-        global workdir
-        if not os.path.isdir(os.path.join(workdir , self.modified)):
-            os.makedirs(os.path.join(workdir , self.modified))
-        path = os.path.join(os.path.join(workdir , self.modified , "right.jpg"))
-        print(path)
-        right = self.image.transpose(Image.ROTATE_270)
-        self.save_image(right , path)
-        self.showImage(path)
+        self.image = self.image.transpose(Image.ROTATE_270)
+        self.showImage()
     
     def sharpenImage(self):
-        global workdir
-        if not os.path.isdir(os.path.join(workdir , self.modified)):
-            os.makedirs(os.path.join(workdir , self.modified))
-        path = os.path.join(os.path.join(workdir , self.modified , "sharpen.jpg"))
-        print(path)
-        sharpen = self.image.filter(ImageFilter.SHARPEN)
-        self.save_image(sharpen , path)
-        self.showImage(path)
+        self.image = self.image.filter(ImageFilter.SHARPEN)
+        self.showImage()
     
-    def save_image(self , image , path):
-        image.save(path)
+    def save_image(self):
+        path = os.path.join(workdir , self.modified)
+        if not os.path.isdir(path):
+            os.makedirs(path)
+        path = os.path.join(path, str(self.number)+self.filename)
+        self.image.save(path)
+        self.number += 1
+    
+    def reset(self):
+        self.image = self.original
+        self.showImage()
 
 imageeditor = ImageEditor("")
 
@@ -87,7 +71,7 @@ class Ui_MainWindow(object):
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.pushButton = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton.setGeometry(QtCore.QRect(10, 10, 111, 31))
+        self.pushButton.setGeometry(QtCore.QRect(10, 10, 201, 31))
         self.pushButton.setObjectName("foder_btn")
         self.listWidget = QtWidgets.QListWidget(self.centralwidget)
         self.listWidget.setGeometry(QtCore.QRect(10, 50, 201, 601))
@@ -110,6 +94,12 @@ class Ui_MainWindow(object):
         self.pushButton_6 = QtWidgets.QPushButton(self.centralwidget)
         self.pushButton_6.setGeometry(QtCore.QRect(670, 590, 75, 23))
         self.pushButton_6.setObjectName("black-white_btn")
+        self.save_btn = QtWidgets.QPushButton(self.centralwidget)
+        self.save_btn.setGeometry(QtCore.QRect(260, 650, 242, 23))
+        self.save_btn.setObjectName("save_btn")
+        self.reset_btn = QtWidgets.QPushButton(self.centralwidget)
+        self.reset_btn.setGeometry(QtCore.QRect(503, 650, 242, 23))
+        self.reset_btn.setObjectName("reset_btn")
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindow)
@@ -122,12 +112,14 @@ class Ui_MainWindow(object):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.pushButton.setText(_translate("MainWindow", "Папка"))
-        self.label.setText(_translate("MainWindow", "TextLabel"))
+        self.label.setText(_translate("MainWindow", ""))
         self.pushButton_2.setText(_translate("MainWindow", "Вліво"))
         self.pushButton_3.setText(_translate("MainWindow", "Вправо"))
         self.pushButton_4.setText(_translate("MainWindow", "Дзеркало"))
         self.pushButton_5.setText(_translate("MainWindow", "Різкість"))
         self.pushButton_6.setText(_translate("MainWindow", "Ч/Б"))
+        self.save_btn.setText(_translate("MainWindow", "Зберегти"))
+        self.reset_btn.setText(_translate("MainWindow", "Скинути"))
     
     def open_folder(self):
         global workdir
@@ -139,17 +131,17 @@ class Ui_MainWindow(object):
                 self.listWidget.addItem(file)
     
     def choose_image(self):
-        global imageeditor , workdir
         filename = self.listWidget.currentItem().text()
-        path = os.path.join(workdir , filename)
-        imageeditor = ImageEditor(filename)
+        imageeditor.filename = filename
         imageeditor.load_image()
-        imageeditor.showImage(path)
+        imageeditor.showImage()
         self.pushButton_6.clicked.connect(imageeditor.bwImage)
         self.pushButton_4.clicked.connect(imageeditor.mirrorImage)
         self.pushButton_2.clicked.connect(imageeditor.leftImage)
         self.pushButton_3.clicked.connect(imageeditor.rightImage)
         self.pushButton_5.clicked.connect(imageeditor.sharpenImage)
+        self.save_btn.clicked.connect(imageeditor.save_image)
+        self.reset_btn.clicked.connect(imageeditor.reset)
 
 if __name__ == "__main__":
     import sys
@@ -158,4 +150,4 @@ if __name__ == "__main__":
     ui = Ui_MainWindow()
     ui.setupUi(MainWindow)
     MainWindow.show()
-    sys.exit(app.exec_())
+    sys.exit(app.exec())
