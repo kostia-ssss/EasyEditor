@@ -57,13 +57,20 @@ class ImageEditor:
         self.image = self.image.filter(ImageFilter.EMBOSS)
         self.showImage()
     
-    def save_image(self):
+    def save_image(self , filename):
         path = os.path.join(workdir , self.modified)
         if not os.path.isdir(path):
             os.makedirs(path)
-        path = os.path.join(path, str(self.number)+self.filename)
-        self.image.save(path)
-        self.number += 1
+        if ui.line.text() != "":
+            path = os.path.join(path, ui.line.text()+'.jpg')
+            print(path)
+            self.image.save(path)
+        else:
+            error = QtWidgets.QMessageBox()
+            error.setWindowTitle("Error")
+            error.setText("Введіть назву зображення")
+
+            error.exec()
     
     def reset(self):
         self.image = self.original
@@ -110,11 +117,14 @@ class Ui_MainWindow(object):
         self.pushButton_8.setGeometry(QtCore.QRect(674, 590, 69, 23))
         self.pushButton_8.setObjectName("emboss_btn")
         self.save_btn = QtWidgets.QPushButton(self.centralwidget)
-        self.save_btn.setGeometry(QtCore.QRect(260, 650, 242, 23))
+        self.save_btn.setGeometry(QtCore.QRect(260, 613, 242, 23))
         self.save_btn.setObjectName("save_btn")
         self.reset_btn = QtWidgets.QPushButton(self.centralwidget)
-        self.reset_btn.setGeometry(QtCore.QRect(503, 650, 242, 23))
+        self.reset_btn.setGeometry(QtCore.QRect(503, 613, 242, 23))
         self.reset_btn.setObjectName("reset_btn")
+        self.line = QtWidgets.QLineEdit(self.centralwidget)
+        self.line.setGeometry(QtCore.QRect(260, 637, 484, 23))
+        self.line.setObjectName("line")
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindow)
@@ -137,6 +147,7 @@ class Ui_MainWindow(object):
         self.reset_btn.setText(_translate("MainWindow", "Скинути"))
         self.pushButton_7.setText(_translate("MainWindow", "Розмиття"))
         self.pushButton_8.setText(_translate("MainWindow", "Вибити"))
+        self.line.setPlaceholderText(_translate("MainWindow", "Назва зображення"))
     
     def open_folder(self):
         global workdir
