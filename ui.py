@@ -1,6 +1,7 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
 import os
 from PIL import Image , ImageFilter , ImageQt
+from style import style
 
 workdir = None
 endings = ['.png' , '.jpg' , '.jpeg' , '.jfif' , '.webp' , '.svg' , '.gif']
@@ -131,6 +132,8 @@ class Ui_MainWindow(object):
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         self.pushButton.clicked.connect(self.open_folder)
         self.listWidget.clicked.connect(self.choose_image)
+        
+        app.setStyleSheet(style)
 
 
     def retranslateUi(self, MainWindow):
