@@ -3,6 +3,7 @@ import os
 from PIL import Image , ImageFilter , ImageQt
 
 workdir = None
+endings = ['.png' , '.jpg' , '.jpeg' , '.jfif' , '.webp' , '.svg' , '.gif']
 
 class ImageEditor:
     def __init__(self, filename):
@@ -143,8 +144,9 @@ class Ui_MainWindow(object):
         workdir = QtWidgets.QFileDialog.getExistingDirectory()
         filenames = os.listdir(workdir)
         for file in filenames:
-            if file.endswith('.png') or file.endswith('.jpg') or file.endswith('.jpeg') or file.endswith('.jfif'):
-                self.listWidget.addItem(file)
+            for ending in endings:
+                if file.endswith(ending):
+                    self.listWidget.addItem(file)
     
     def choose_image(self):
         filename = self.listWidget.currentItem().text()
