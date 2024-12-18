@@ -48,6 +48,14 @@ class ImageEditor:
         self.image = self.image.filter(ImageFilter.SHARPEN)
         self.showImage()
     
+    def smoothImage(self):
+        self.image = self.image.filter(ImageFilter.SMOOTH)
+        self.showImage()
+    
+    def embossImage(self):
+        self.image = self.image.filter(ImageFilter.EMBOSS)
+        self.showImage()
+    
     def save_image(self):
         path = os.path.join(workdir , self.modified)
         if not os.path.isdir(path):
@@ -80,20 +88,26 @@ class Ui_MainWindow(object):
         self.label.setGeometry(QtCore.QRect(270, 30, 511, 481))
         self.label.setObjectName("label")
         self.pushButton_2 = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton_2.setGeometry(QtCore.QRect(260, 590, 75, 23))
+        self.pushButton_2.setGeometry(QtCore.QRect(260, 590, 69, 23))
         self.pushButton_2.setObjectName("left_btn")
         self.pushButton_3 = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton_3.setGeometry(QtCore.QRect(360, 590, 75, 23))
+        self.pushButton_3.setGeometry(QtCore.QRect(329, 590, 69, 23))
         self.pushButton_3.setObjectName("right_btn")
         self.pushButton_4 = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton_4.setGeometry(QtCore.QRect(470, 590, 75, 23))
+        self.pushButton_4.setGeometry(QtCore.QRect(398, 590, 69, 23))
         self.pushButton_4.setObjectName("mirror_btn")
         self.pushButton_5 = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton_5.setGeometry(QtCore.QRect(570, 590, 75, 23))
+        self.pushButton_5.setGeometry(QtCore.QRect(467, 590, 69, 23))
         self.pushButton_5.setObjectName("rizkist_btn")
         self.pushButton_6 = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton_6.setGeometry(QtCore.QRect(670, 590, 75, 23))
+        self.pushButton_6.setGeometry(QtCore.QRect(536, 590, 69, 23))
         self.pushButton_6.setObjectName("black-white_btn")
+        self.pushButton_7 = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButton_7.setGeometry(QtCore.QRect(605, 590, 69, 23))
+        self.pushButton_7.setObjectName("smooth_btn")
+        self.pushButton_8 = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButton_8.setGeometry(QtCore.QRect(674, 590, 69, 23))
+        self.pushButton_8.setObjectName("emboss_btn")
         self.save_btn = QtWidgets.QPushButton(self.centralwidget)
         self.save_btn.setGeometry(QtCore.QRect(260, 650, 242, 23))
         self.save_btn.setObjectName("save_btn")
@@ -120,6 +134,8 @@ class Ui_MainWindow(object):
         self.pushButton_6.setText(_translate("MainWindow", "Ч/Б"))
         self.save_btn.setText(_translate("MainWindow", "Зберегти"))
         self.reset_btn.setText(_translate("MainWindow", "Скинути"))
+        self.pushButton_7.setText(_translate("MainWindow", "Розмиття"))
+        self.pushButton_8.setText(_translate("MainWindow", "Вибити"))
     
     def open_folder(self):
         global workdir
@@ -142,6 +158,8 @@ class Ui_MainWindow(object):
         self.pushButton_5.clicked.connect(imageeditor.sharpenImage)
         self.save_btn.clicked.connect(imageeditor.save_image)
         self.reset_btn.clicked.connect(imageeditor.reset)
+        self.pushButton_7.clicked.connect(imageeditor.smoothImage)
+        self.pushButton_8.clicked.connect(imageeditor.embossImage)
 
 if __name__ == "__main__":
     import sys
