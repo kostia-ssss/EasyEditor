@@ -57,7 +57,7 @@ class ImageEditor:
         self.image = self.image.filter(ImageFilter.EMBOSS)
         self.showImage()
     
-    def save_image(self , filename):
+    def save_image(self):
         path = os.path.join(workdir , self.modified)
         if not os.path.isdir(path):
             os.makedirs(path)
