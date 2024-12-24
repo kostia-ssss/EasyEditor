@@ -4,7 +4,7 @@ from PIL import Image , ImageFilter , ImageQt
 from style import style
 
 workdir = None
-endings = ['.png' , '.jpg' , '.jpeg' , '.jfif' , '.webp' , '.svg' , '.gif']
+endings = ['.png' , '.jpg' , '.jpeg' , '.jfif' , '.webp' , '.svg']
 
 class ImageEditor:
     def __init__(self, filename):
@@ -134,11 +134,12 @@ class Ui_MainWindow(object):
         self.listWidget.clicked.connect(self.choose_image)
         
         app.setStyleSheet(style)
+        self.SEF()
 
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "Easy Editor"))
         self.pushButton.setText(_translate("MainWindow", "Папка"))
         self.label.setText(_translate("MainWindow", ""))
         self.pushButton_2.setText(_translate("MainWindow", "Вліво"))
@@ -167,6 +168,7 @@ class Ui_MainWindow(object):
         imageeditor.filename = filename
         imageeditor.load_image()
         imageeditor.showImage()
+        self.SET()
         self.pushButton_6.clicked.connect(imageeditor.bwImage)
         self.pushButton_4.clicked.connect(imageeditor.mirrorImage)
         self.pushButton_2.clicked.connect(imageeditor.leftImage)
@@ -177,6 +179,28 @@ class Ui_MainWindow(object):
         self.pushButton_7.clicked.connect(imageeditor.smoothImage)
         self.pushButton_8.clicked.connect(imageeditor.embossImage)
 
+    def SET(self):
+        self.pushButton_2.setEnabled(True)
+        self.pushButton_3.setEnabled(True)
+        self.pushButton_4.setEnabled(True)
+        self.pushButton_5.setEnabled(True)
+        self.pushButton_6.setEnabled(True)
+        self.pushButton_7.setEnabled(True)
+        self.pushButton_8.setEnabled(True)
+        self.save_btn.setEnabled(True)
+        self.reset_btn.setEnabled(True)
+    
+    def SEF(self):
+        self.pushButton_2.setEnabled(False)
+        self.pushButton_3.setEnabled(False)
+        self.pushButton_4.setEnabled(False)
+        self.pushButton_5.setEnabled(False)
+        self.pushButton_6.setEnabled(False)
+        self.pushButton_7.setEnabled(False)
+        self.pushButton_8.setEnabled(False)
+        self.save_btn.setEnabled(False)
+        self.reset_btn.setEnabled(False)
+    
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
