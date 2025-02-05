@@ -63,7 +63,7 @@ class ImageEditor:
         if not os.path.isdir(path):
             os.makedirs(path)
         if ui.line.text() != "":
-            path = os.path.join(path, ui.line.text()+'.jpg')
+            path = os.path.join(path, ui.line.text()+'.png')
             print(path)
             self.image.save(path)
         else:
